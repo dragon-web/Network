@@ -1,25 +1,43 @@
-#define MAXBUF 1024
 #include<stdio.h>
 #include<stdlib.h>
 #include<sys/types.h>
 #include<sys/socket.h>
+#include<unistd.h>
+#include<arpa/inet.h>
+#include<ctype.h>
+#define SERV_PORT 6666
+#define SERV_IP "172.16.0.12"
 
 int main(int argc,char* argv[])
 {
-  int pid;
-  int sockfd,new_fd;
-  socklen_t len;
-  struct sockaddr_in my_addr,their_addr;
-  unsigned int myport,lisnum;
-  char bud[MAXBUF + 1];
-  if(argv[2])
+  int lfd,cfd,n,i;
+  struct sockaddr_in serv_addr,clie_addr;
+  socklen_t clie_addr_len;
+  char buf[BUFSIZ];
+  lfd = socket(AF_INET,SOCK_STREAM,0);
+  if(lfd == -1)//检查返回值
   {
-    myport = atoi(argv[2])
+   perror("socket");
+   exit(EXIT_FAILURE);
   }
-  else{
-    myport = 6379;
+  serv_addr.sin_family = AF_INET;
+  serv_addr.sin_port = htons(SERV_PORT);
+  serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+  bind(lfd,(struct sockaddr *)&serv_addr,sizeof(serv_addr));
+
+  listen(lfd,32);//同时允许有32个客户端发起连接
+
+  clie_addr_len = sizeof(clie_addr);
+  cfd = accept(lfd,(struct sockaddr*)&clie_addr,&clie_addr_len);
+while(1)
+{
+  n = read(cfd,buf,sizeof(buf));
+  for(i = 0;i < n;++i)
+  {
+     buf[i] = toupper(buf[i]);
   }
-
-
-
+  write(cfd,buf,n);
+}
+  close(lfd);
+  close(cfd);
 }
