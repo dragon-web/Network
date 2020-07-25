@@ -13,7 +13,7 @@ int main(int argc,char* argv[])
   int lfd,cfd,n,i;
   struct sockaddr_in serv_addr,clie_addr;
   socklen_t clie_addr_len;
-  char buf[BUFSIZ];
+  char buf[BUFSIZ],clie_IP[BUFSIZ];
   lfd = socket(AF_INET,SOCK_STREAM,0);
   if(lfd == -1)//检查返回值
   {
@@ -29,7 +29,8 @@ int main(int argc,char* argv[])
 
   clie_addr_len = sizeof(clie_addr);
   cfd = accept(lfd,(struct sockaddr*)&clie_addr,&clie_addr_len);
-while(1)
+  printf("client IP:%s,client port :d\n",inet_ntop(AF_INET,&clie_addr.sin_addr.s_addr,clie_IP,sizeof(clie_IP)),ntohs(clie_addr.sin_port));
+  while(1)
 {
   n = read(cfd,buf,sizeof(buf));
   for(i = 0;i < n;++i)
