@@ -1,5 +1,4 @@
 all : Sever Client
-.PHONY: all
 Server:Server.c
 	gcc -o Sever Sever.c
 Client:Client.c
