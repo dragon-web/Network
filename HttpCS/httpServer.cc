@@ -11,7 +11,6 @@ int main(int argc, char *argv[])
 
     sp->initServer();
     sp->Start();
-
     delete sp;
     return 0;
 }
